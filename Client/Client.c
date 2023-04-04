@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 void fileOutput(char* filename, char* text);
+void Output(char* text);
 char* fileInput(char* filename);
 
 int main(int argc, char *argv[])
@@ -9,7 +10,7 @@ int main(int argc, char *argv[])
     char* text = "testing \n testing";
     fileOutput(filename, text);
 
-    printf(fileInput(filename));
+    Output(fileInput(filename));
     return 0;
 }
 
@@ -22,7 +23,7 @@ void fileOutput(char* filename, char* text)
     fclose(pF);
 }
 
-char *fileInput(char* filename)
+char* fileInput(char* filename)
 {
     FILE *pF = fopen(filename, "r");
     char *text;
@@ -48,4 +49,9 @@ char *fileInput(char* filename)
         text[size] = '\0';
     }
     return text;
+}
+
+void Output(char* text)
+{
+    printf(text);
 }
