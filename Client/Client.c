@@ -3,11 +3,9 @@
 
 int main(int argc, char *argv[])
 {
-    char *filename = "test.txt";
-    char *text = "testing\ntesting";
-    fileOutput(filename, text);
-    char *out = fileInput(filename);
-    Output(out);
+    char *text = inputFromTerminal();
+
+    outputToTerminal(text);
 
     return 0;
 }

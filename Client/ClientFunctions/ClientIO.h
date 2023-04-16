@@ -1,8 +1,9 @@
 #ifndef CLIENTIO_H
 #define CLIENTIO_H
 
-void fileOutput(char *filename, char *text);
-char *fileInput(char *filename);
-void Output(char *text);
+void outputToFile(char *filename, char *text);
+char *inputFromFile(char *filename);
+void outputToTerminal(char *text);
+char *inputFromTerminal();
 
 #endif
