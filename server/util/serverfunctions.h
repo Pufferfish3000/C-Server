@@ -1,5 +1,5 @@
-#ifndef SERVECLIENT_H
-#define SERVECLIENT_H
+#ifndef SERVERFUNCTIONS_H
+#define SERVERFUNCTIONS_H
 
 void quickSort(int *arr, int low, int high);
 

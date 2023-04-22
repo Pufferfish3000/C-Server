@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "ClientFunctions/ClientIO.h"
+#include "util/clientio.h"
 
 int main(int argc, char *argv[])
 {

@@ -1,5 +1,5 @@
 /**
- * @file ClientIO.c
+ * @file clientio.c
  * @brief Contains functions for input and output
  *
  * This contains functions for input and output for the client,
@@ -11,7 +11,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "ClientIO.h"
+#include "clientio.h"
 
 /**
  * @brief Outputs text to a file

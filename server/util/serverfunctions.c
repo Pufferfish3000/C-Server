@@ -1,5 +1,5 @@
 /**
- * @file ServeClient.c
+ * @file serverfunctions.c
  * @brief Contains functions that serve a client
  *
  * This contains functions that provide functionality to a client,
@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "ServeClient.h"
+#include "serverfunctions.h"
 
 /**
  * @brief Swaps two integers

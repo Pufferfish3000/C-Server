@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "ServerFunctions/ServeClient.h"
+#include "util/serverfunctions.h"
 
 int main(int argc, char *argv[])
 {
