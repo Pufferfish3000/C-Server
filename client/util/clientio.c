@@ -3,8 +3,7 @@
  * @brief Contains functions for input and output
  *
  * This contains functions for input and output for the client,
- * including input from the terminal and output to the terminal,
- * as well as input from a file and output to a file.
+ * including input from a file and output to a file.
  *
  * @author Braden Byrnes
  * @bug no known bugs
@@ -28,7 +27,7 @@ void outputToFile(char *filename, char *text)
     // Check if file exists
     if (NULL == pF)
     {
-        printf("Error opening file");
+        printf("Error opening file\n");
     }
     else
     {
@@ -53,7 +52,7 @@ char *inputFromFile(char *filename)
     // Check if file exists
     if (NULL == pF)
     {
-        printf("Error opening file");
+        printf("Error opening file\n");
     }
     else
     {
@@ -68,49 +67,6 @@ char *inputFromFile(char *filename)
         fread(text, 1, size, pF);
         // Add null terminator
         text[size] = '\0';
-    }
-    return text;
-}
-
-/**
- * @brief Outputs text to the terminal
- *
- * This function takes text and outputs it to the terminal.
- *
- * @param text The text to output to the terminal
- * @return void
- */
-void outputToTerminal(char *text)
-{
-    printf("%s", text);
-}
-
-/**
- * @brief Inputs text from the terminal
- *
- * This function takes no parameters and returns the text input from the terminal.
- *
- * @return char* The text input from the terminal
- */
-char *inputFromTerminal()
-{
-    // Allocate memory for string
-    char *text = (char *)malloc(100);
-    // Check if memory was allocated
-    if (text == NULL)
-    {
-        // Exit with error code 1
-        printf("Unable to allocate memory");
-        exit(1);
-    }
-    // Get input from terminal
-    int len = scanf("%s", text);
-    // Check if input was read
-    if (len == EOF)
-    {
-        // Exit with error code 2
-        printf("Unable to read from terminal");
-        exit(2);
     }
     return text;
 }
