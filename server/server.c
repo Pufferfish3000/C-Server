@@ -10,15 +10,24 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+/**
+ * @brief Runs the server
+ *
+ * This function runs the server and manages data sent to and from clients.
+ *
+ * @return void
+ */
 void runServer()
 {
+    // Create socket and accept connections from clients
     int clientsock = acceptConnections();
     char *message;
-    message = readClientMessage(clientsock);
     while (1)
     {
+        // Read messages from clients
         message = readClientMessage(clientsock);
         printf("Client: %s\n", message);
+        // Send messages to clients
         sendToClient(clientsock, "Hello from server");
     }
 }
