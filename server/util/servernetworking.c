@@ -13,8 +13,20 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <pthread.h>
 #include "servernetworking.h"
+void sendToClient(int clientsock, char *message);
+struct clientMessageData readClientMessage(int clientsock);
+void *clientThread(void *);
 
+struct clientMessageData
+{
+    int readSize;
+    char *message;
+};
+
+// server socket, client socket, client size, and new socket
+int sock, clientsock, c, *newSock;
 /**
  * @brief Accepts connections
  *
@@ -24,8 +36,6 @@
  */
 int acceptConnections()
 {
-    // server socket, client socket, client size
-    int sock, clientsock, c;
     // server and client addresses
     struct sockaddr_in server, client;
 
@@ -58,16 +68,53 @@ int acceptConnections()
     c = sizeof(struct sockaddr_in);
 
     // Accept connection from client
-    clientsock = accept(sock, (struct sockaddr *)&client, (socklen_t *)&c);
-    // Check if connection was accepted
-    if (clientsock < 0)
+    while ((clientsock = accept(sock, (struct sockaddr *)&client, (socklen_t *)&c)))
     {
-        printf("Error when accepting\n");
-        return -1;
+        printf("Connection accepted\n");
+
+        pthread_t sniffThread;
+        newSock = malloc(1);
+        *newSock = clientsock;
+
+        if (pthread_create(&sniffThread, NULL, clientThread, (void *)newSock) < 0)
+        {
+            printf("Error when creating thread\n");
+            return -1;
+        }
     }
 
-    // Return client socket
-    return clientsock;
+    // old code, may be useful later
+    // // Check if connection was accepted
+    // if (clientsock < 0)
+    // {
+    //     printf("Error when accepting\n");
+    //     return -1;
+    // }
+
+    // // Return client socket
+    // return clientsock;
+
+    return 0; // temporary return value
+}
+
+void *clientThread(void *clientsock)
+{
+    // main client logic
+    int sock = *(int*)clientsock;
+    printf("1\n");
+    struct clientMessageData s = readClientMessage(sock);
+    printf("2\n");
+    printf("Client message: %s\n", s.message);
+    printf("3\n");
+    while (s.readSize > 0)
+    {
+        // processtext > serverfunctions > sendToClient
+        s = readClientMessage(sock);
+        printf("Client message: %s\n", s.message);
+        sendToClient(sock, "Hello from server");
+    }
+
+    return NULL;
 }
 
 /**
@@ -78,29 +125,22 @@ int acceptConnections()
  * @param clientsock The socket of the client
  * @return char* The message from the client
  */
-char *readClientMessage(int clientsock)
+struct clientMessageData readClientMessage(int clientsock)
 {
-    char *message;
-    int read_size;
+    struct clientMessageData s;
+
     // Allocate memory for message
-    message = malloc(2000);
+    s.message = malloc(2000);
 
     // Receive message from client
-    read_size = recv(clientsock, message, 2000, 0);
-    // Check if client disconnected
-    if (read_size == 0)
-    {
-        printf("Client disconnected\n");
-        fflush(stdout);
-        return "exit";
-    }
+    s.readSize = recv(clientsock, s.message, 2000, 0);
     // Check for errors when receiving
-    else if (read_size == -1)
+    if (s.readSize == -1)
     {
         printf("Error when receiving\n");
     }
 
-    return message;
+    return s;
 }
 
 /**

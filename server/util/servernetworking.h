@@ -2,7 +2,7 @@
 #define SERVERNETWORKING_H
 
 int acceptConnections();
-char *readClientMessage(int clientsock);
-void sendToClient(int clientsock, char *message);
+// char *readClientMessage(int clientsock);
+// void sendToClient(int clientsock, char *message);
 
 #endif
