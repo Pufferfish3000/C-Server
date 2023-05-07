@@ -13,8 +13,10 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <unistd.h> 
 #include <pthread.h>
 #include "servernetworking.h"
+#include "serverfunctions.h"
 void sendToClient(int clientsock, char *message);
 struct clientMessageData readClientMessage(int clientsock);
 void *clientThread(void *);
@@ -101,18 +103,7 @@ void *clientThread(void *clientsock)
 {
     // main client logic
     int sock = *(int*)clientsock;
-    printf("1\n");
-    struct clientMessageData s = readClientMessage(sock);
-    printf("2\n");
-    printf("Client message: %s\n", s.message);
-    printf("3\n");
-    while (s.readSize > 0)
-    {
-        // processtext > serverfunctions > sendToClient
-        s = readClientMessage(sock);
-        printf("Client message: %s\n", s.message);
-        sendToClient(sock, "Hello from server");
-    }
+    recvIntArr(sock);
 
     return NULL;
 }
@@ -159,4 +150,19 @@ void sendToClient(int clientsock, char *message)
     {
         printf("Error when sending\n");
     }
+}
+
+void recvIntArr(int clientsock)
+{
+    size_t size;
+
+    read (clientsock, &size, sizeof(size_t));
+    size = ntohl(size);
+
+    long intArr[size];
+    read(clientsock, intArr, sizeof(intArr));
+
+    quickSort(intArr, 0, size - 1);
+
+    send(clientsock, intArr, sizeof(intArr), 0);
 }

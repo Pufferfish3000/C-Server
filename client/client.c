@@ -25,18 +25,7 @@ void runClient()
 {
     // Connect to server and send initial message
     int sock = connectToServer();
-    sendToServer(sock, "Hello from client");
-    // Allocate memory for messages
-    char *clientmessage = malloc(2000);
-    char *servermessage;
-
-    // Read messages from server and send messages to server until exit
-    while (strcmp(clientmessage, "exit") != 0)
-    {
-        printf("Send a message to the server: ");
-        scanf("%s", clientmessage);
-        sendToServer(sock, clientmessage);
-        servermessage = readServerMessage(sock);
-        printf("Server: %s\n", servermessage);
-    }
+    long arr [5]= {1, 0, 1, -2, 3};
+    size_t size = sizeof(arr)/ sizeof(arr[0]);
+    sendintarray(sock, arr, size);
 }

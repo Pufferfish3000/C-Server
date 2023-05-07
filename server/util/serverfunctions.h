@@ -1,6 +1,6 @@
 #ifndef SERVERFUNCTIONS_H
 #define SERVERFUNCTIONS_H
 
-void quickSort(int *arr, int low, int high);
+void quickSort(long *arr, long low, long high);
 
 #endif

@@ -22,9 +22,9 @@
  * @param b The second integer
  * @return void
  */
-void swap(int *a, int *b)
+void swap(long *a, long *b)
 {
-    int temp = *a;
+    long temp = *a;
     *a = *b;
     *b = temp;
 }
@@ -40,15 +40,15 @@ void swap(int *a, int *b)
  * @param high The high index
  * @return int The partition index
  */
-int partition(int *arr, int low, int high)
+long partition(long *arr, long low, long high)
 {
     // pivot (Element to be placed at high position)
-    int pivot = arr[high];
+    long pivot = arr[high];
     // Index of smaller element
-    int i = low - 1;
+    long i = low - 1;
 
     // Iterate through the array until reaching the high pivot
-    for (int j = low; j < high; j++)
+    for (long j = low; j < high; j++)
     {
         // If current element is smaller than or equal to pivot
         if (arr[j] < pivot)
@@ -76,13 +76,13 @@ int partition(int *arr, int low, int high)
  * @param high The high index
  * @return void
  */
-void quickSort(int *arr, int low, int high)
+void quickSort(long *arr, long low, long high)
 {
     // If the low index is less than the high index
     if (low < high)
     {
         // pi is partitioning index, arr[p] is now at right place
-        int pi = partition(arr, low, high);
+        long pi = partition(arr, low, high);
         // Separately sort elements before partition and after partition
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);

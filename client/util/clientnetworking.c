@@ -13,6 +13,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 /**
  * @brief Connects to the server
@@ -93,4 +94,23 @@ void sendToServer(int sock, char *message)
     {
         printf("Unable to send\n");
     }
+}
+
+void sendintarray(int sock, long *intarray, size_t size)
+{
+    // Send message to server and check for errors
+    //int intarr[5] = {1,2,3,4,5};
+    long newArray[size];
+    size_t sentsize = htonl(size);
+
+    send(sock, &sentsize, sizeof(size_t), 0);
+    send(sock, intarray, sizeof(long) * size, 0);
+
+    read (sock, newArray, sizeof(newArray));
+
+    for (int i = 0; i < size; i++)
+    {
+        printf("%ld\n", newArray[i]);
+    }
+    
 }
