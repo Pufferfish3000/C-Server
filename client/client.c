@@ -4,39 +4,118 @@
 #include "util/clientio.h"
 #include "util/clientnetworking.h"
 
-void runClient();
+void sortInts();
+void makeChoice();
+void commWithServer();
 
+/**
+ * @brief Main function
+ *
+ * This function is the main function, which is called when the program is run.
+ *
+ * @param argc The number of command line arguments
+ * @param argv The command line arguments
+ * @return int The exit status of the program
+ */
 int main(int argc, char *argv[])
 {
-    runClient();
+    // Runs the makeChoice function, prompting the user to choose a function
+    makeChoice();
 
     return 0;
 }
 
-
 /**
- * @brief Runs the client
+ * @brief Prompts the user to choose a function
  *
- * This function runs the client and manages data sent to and from the server.
- * 
+ * This function prompts the user to choose a function to run,
+ * and then runs that function.
+ *
  * @return void
  */
-void runClient()
+void makeChoice()
 {
-    // Connect to server and send initial message
-    int sock = connectToServer();
-    sendToServer(sock, "Hello from client");
-    // Allocate memory for messages
-    char *clientmessage = malloc(2000);
-    char *servermessage;
+    // Prompt user to choose a function
+    printf("choose a function to run\n");
+    printf("1: send a message to the server\n");
+    printf("2: sort an array of integers\n");
+    printf("3: exit\n");
 
-    // Read messages from server and send messages to server until exit
-    while (strcmp(clientmessage, "exit") != 0)
+    // Get user choice
+    int choice;
+    scanf("%d", &choice);
+
+    // Run function based on user choice
+    switch (choice)
     {
-        printf("Send a message to the server: ");
-        scanf("%s", clientmessage);
-        sendToServer(sock, clientmessage);
-        servermessage = readServerMessage(sock);
-        printf("Server: %s\n", servermessage);
+    // if the user chooses 1, run the commWithServer function,
+    // which sends a message to the server
+    case 1:
+        commWithServer();
+        break;
+    // if the user chooses 2, run the sortInts function,
+    // which sorts an array of integers
+    case 2:
+        sortInts();
+        break;
+    // if the user chooses 3, exit the program
+    case 3:
+        exit(0);
+        break;
+    // if the user chooses anything else, prompt them to choose again
+    default:
+        printf("Invalid choice\n");
+        makeChoice();
     }
+}
+
+/**
+ * @brief Sorts an array of integers
+ *
+ * This function prompts the user to enter an array of integers,
+ * and then sends that array to the server to be sorted, then it
+ * receives the sorted array back from the server and prints it.
+ *
+ * @return void
+ */
+void sortInts()
+{
+    // Get array size from user
+    size_t size;
+    printf("how many numbers are in your array?\n");
+    scanf("%ld", &size);
+    // Get array from user
+    long arr[size];
+    printf("Enter %ld numbers:\n", size);
+    for (int i = 0; i < size; i++)
+    {
+        scanf("%ld", &arr[i]);
+    }
+
+    // connect to the server
+    int sock = connectToServer();
+    // send the array to the server to be sorted
+    sendintarray(sock, arr, size);
+
+    // prompt the user to choose a function again
+    makeChoice();
+}
+
+/**
+ * @brief Sends a message to the server
+ *
+ * This function prompts the user to enter a message,
+ * and then sends that message to the server.
+ *
+ * @return void
+ */
+void commWithServer()
+{
+    // connect to the server
+    int sock = connectToServer();
+    // talk to the server
+    talkToServer(sock);
+
+    // prompt the user to choose a function again
+    makeChoice();
 }

@@ -13,19 +13,29 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+#include <pthread.h>
 #include "servernetworking.h"
+#include "serverfunctions.h"
+
+void sendToClient(int clientsock, char *message);
+struct clientMessageData readClientMessage(int clientsock);
+void clientChoice(int clientsock);
+void *clientThread(void *);
+void commWithClient(int clientsock);
+
+// server socket, client socket, client size, and new socket
+int sock, clientsock, c, *newSock;
 
 /**
- * @brief Accepts connections
+ * @brief Accepts connections from clients
  *
- * This function accepts connections from clients.
+ * This function accepts connections from clients, and creates a thread for each client.
  *
- * @return int The socket of the client
+ * @return int The exit status of the program
  */
 int acceptConnections()
 {
-    // server socket, client socket, client size
-    int sock, clientsock, c;
     // server and client addresses
     struct sockaddr_in server, client;
 
@@ -58,65 +68,141 @@ int acceptConnections()
     c = sizeof(struct sockaddr_in);
 
     // Accept connection from client
-    clientsock = accept(sock, (struct sockaddr *)&client, (socklen_t *)&c);
-    // Check if connection was accepted
-    if (clientsock < 0)
+    while ((clientsock = accept(sock, (struct sockaddr *)&client, (socklen_t *)&c)))
     {
-        printf("Error when accepting\n");
-        return -1;
+        printf("Connection accepted\n");
+
+        // Create thread for client
+        pthread_t sniffThread;
+
+        // Create new socket for client
+        newSock = malloc(1);
+        *newSock = clientsock;
+
+        // Create thread for client and check for errors
+        if (pthread_create(&sniffThread, NULL, clientThread, (void *)newSock) < 0)
+        {
+            printf("Error when creating thread\n");
+            return -1;
+        }
     }
 
-    // Return client socket
-    return clientsock;
+    return 0;
 }
 
 /**
- * @brief Receives messages from clients
+ * @brief handles client and server communication
  *
- * This function receives messages from clients.
+ * This function handles communication between the client and server,
+ * and calls the appropriate functions based on the client's choice.
  *
- * @param clientsock The socket of the client
- * @return char* The message from the client
+ * @param clientsock The client socket
+ * @return void* NULL
  */
-char *readClientMessage(int clientsock)
+void *clientThread(void *clientsock)
 {
-    char *message;
-    int read_size;
-    // Allocate memory for message
-    message = malloc(2000);
+    // get client socket from void pointer
+    int sock = *(int *)clientsock;
 
-    // Receive message from client
-    read_size = recv(clientsock, message, 2000, 0);
-    // Check if client disconnected
-    if (read_size == 0)
-    {
-        printf("Client disconnected\n");
-        fflush(stdout);
-        return "exit";
-    }
-    // Check for errors when receiving
-    else if (read_size == -1)
-    {
-        printf("Error when receiving\n");
-    }
+    // get client choice
+    clientChoice(sock);
 
-    return message;
+    return NULL;
 }
 
 /**
- * @brief Sends messages to clients
+ * @brief recieves an array of integers from the client, sorts it, and sends it back
  *
- * This function sends messages to clients.
+ * This function recieves an array of integers from the client, sorts it, and sends
+ * the sorted array back to the client.
  *
- * @param clientsock The socket of the client
- * @param message The message to send to the client
+ * @param clientsock The client socket
  * @return void
  */
-void sendToClient(int clientsock, char *message)
+void recvIntArr(int clientsock)
 {
-    // Send message to client and check for errors
-    if (send(clientsock, message, strlen(message), 0) < 0)
+    // size of array
+    size_t size;
+
+    // read size of array
+    read(clientsock, &size, sizeof(size_t));
+    size = ntohl(size);
+
+    // read array
+    long intArr[size];
+    read(clientsock, intArr, sizeof(intArr));
+
+    // sort array
+    quickSort(intArr, 0, size - 1);
+
+    // send sorted array back to client
+    send(clientsock, intArr, sizeof(intArr), 0);
+
+    // close client socket
+    close(clientsock);
+}
+
+/**
+ * @brief communicates with the client
+ *
+ * This function communicates with the client, printing the client's message and
+ * sending a confirmation message back to the client.
+ *
+ * @param clientsock The client socket
+ * @return void
+ */
+void commWithClient(int clientsock)
+{
+    // read client message
+    char *message = malloc(2000);
+    read(clientsock, message, 2000);
+
+    // print client message
+    printf("Client message: %s\n", message);
+
+    // send confirmation message
+    send(clientsock, "Message Recieved", 2000, 0);
+
+    // close client socket
+    close(clientsock);
+}
+
+/**
+ * @brief gets the client's choice and calls the appropriate function
+ *
+ * This function gets the client's choice and calls the appropriate function.
+ *
+ * @param clientsock The client socket
+ * @return void
+ */
+void clientChoice(int clientsock)
+{
+    // client choice
+    int choice;
+
+    // read client choice
+    read(clientsock, &choice, sizeof(int));
+    choice = ntohl(choice);
+
+    // print client choice
+    printf("Choice: %d\n", choice);
+
+    // call appropriate function based on client choice
+    switch (choice)
     {
-        printf("Error when sending\n");
+    // if choice is 1, call commWithClient which communicates with the client
+    case 1:
+        commWithClient(clientsock);
+        break;
+
+    // if choice is 2, call recvIntArr which recieves an array of integers from the client,
+    // sorts it, and sends it back
+    case 2:
+        recvIntArr(clientsock);
+        break;
+
+    // if any other choice, do nothing
+    default:
+        break;
     }
 }

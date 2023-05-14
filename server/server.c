@@ -4,30 +4,18 @@
 
 void runServer();
 
+/**
+ * @brief Main function
+ * 
+ *  This function is the main function, which is called when the program is run.
+ * 
+ * @param argc The number of command line arguments
+ * @param argv The command line arguments
+ * @return int The exit status of the program
+ */
 int main(int argc, char *argv[])
 {
-    runServer();
+    // Run the runServer function, which runs the server
+    acceptConnections();
     return 0;
-}
-
-/**
- * @brief Runs the server
- *
- * This function runs the server and manages data sent to and from clients.
- *
- * @return void
- */
-void runServer()
-{
-    // Create socket and accept connections from clients
-    int clientsock = acceptConnections();
-    char *message;
-    while (1)
-    {
-        // Read messages from clients
-        message = readClientMessage(clientsock);
-        printf("Client: %s\n", message);
-        // Send messages to clients
-        sendToClient(clientsock, "Hello from server");
-    }
 }
