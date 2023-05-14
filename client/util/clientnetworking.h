@@ -6,5 +6,5 @@ int connectToServer();
 char *readServerMessage(int sock);
 void sendToServer(int sock, char *message);
 void sendintarray(int sock, long *arr, size_t size);
-
+void talkToServer(int sock);
 #endif

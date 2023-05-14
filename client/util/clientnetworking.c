@@ -14,6 +14,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+void sendInt(int sock, int num);
 
 /**
  * @brief Connects to the server
@@ -49,7 +50,6 @@ int connectToServer()
         printf("Unable to connect\n");
         return -1;
     }
-    printf("Connected\n");
 
     // Return server socket
     return sock;
@@ -89,6 +89,7 @@ char *readServerMessage(int sock)
  */
 void sendToServer(int sock, char *message)
 {
+    sendInt(sock, 1);
     // Send message to server and check for errors
     if (send(sock, message, strlen(message), 0) < 0)
     {
@@ -99,18 +100,43 @@ void sendToServer(int sock, char *message)
 void sendintarray(int sock, long *intarray, size_t size)
 {
     // Send message to server and check for errors
-    //int intarr[5] = {1,2,3,4,5};
+    // int intarr[5] = {1,2,3,4,5};
+    sendInt(sock, 2);
+
     long newArray[size];
     size_t sentsize = htonl(size);
 
     send(sock, &sentsize, sizeof(size_t), 0);
     send(sock, intarray, sizeof(long) * size, 0);
 
-    read (sock, newArray, sizeof(newArray));
+    read(sock, newArray, sizeof(newArray));
 
+    printf("Sorted array:\n");
     for (int i = 0; i < size; i++)
     {
         printf("%ld\n", newArray[i]);
     }
-    
+}
+
+void sendInt(int sock, int num)
+{
+    num = htonl(num);
+    send(sock, &num, sizeof(int), 0);
+}
+
+void talkToServer(int sock)
+{
+    sendInt(sock, 1);
+    char message [2000];
+    int i = 0;
+    char c = getchar();// eat newline
+    printf("enter a message %c", c);
+    memset(message, 0, 2000);
+    while((message[i++] = getchar()) != '\n');
+
+    //scanf("", message); //evil string butcher
+    printf("Sending: %s\n", message);
+    send(sock, message, strlen(message), 0);
+    read(sock, message, 2000);
+    printf("Server Message: %s\n", message);
 }

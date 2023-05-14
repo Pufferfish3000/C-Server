@@ -13,14 +13,15 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <unistd.h> 
+#include <unistd.h>
 #include <pthread.h>
 #include "servernetworking.h"
 #include "serverfunctions.h"
 void sendToClient(int clientsock, char *message);
 struct clientMessageData readClientMessage(int clientsock);
+void clientChoice(int clientsock);
 void *clientThread(void *);
-
+void commWithClient(int clientsock);
 struct clientMessageData
 {
     int readSize;
@@ -102,8 +103,8 @@ int acceptConnections()
 void *clientThread(void *clientsock)
 {
     // main client logic
-    int sock = *(int*)clientsock;
-    recvIntArr(sock);
+    int sock = *(int *)clientsock;
+    clientChoice(sock);
 
     return NULL;
 }
@@ -156,7 +157,7 @@ void recvIntArr(int clientsock)
 {
     size_t size;
 
-    read (clientsock, &size, sizeof(size_t));
+    read(clientsock, &size, sizeof(size_t));
     size = ntohl(size);
 
     long intArr[size];
@@ -165,4 +166,37 @@ void recvIntArr(int clientsock)
     quickSort(intArr, 0, size - 1);
 
     send(clientsock, intArr, sizeof(intArr), 0);
+    close(clientsock);
+}
+
+void commWithClient(int clientsock)
+{
+    char *message = malloc(2000);
+    read(clientsock, message, 2000);
+    printf("Client message: %s\n", message);
+
+    send(clientsock, "Message Recieved", 2000, 0);
+
+    close(clientsock);
+}
+void clientChoice(int clientsock)
+{
+    int choice;
+
+    read(clientsock, &choice, sizeof(int));
+    choice = ntohl(choice);
+
+    printf("Choice: %d\n", choice);
+    switch (choice)
+    {
+    case 1:
+        commWithClient(clientsock);
+        break;
+    case 2:
+        recvIntArr(clientsock);
+        break;
+
+    default:
+        break;
+    }
 }
