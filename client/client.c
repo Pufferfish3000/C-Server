@@ -7,6 +7,7 @@
 void sortInts();
 void makeChoice();
 void commWithServer();
+void resartClient();
 
 /**
  * @brief Main function
@@ -23,6 +24,12 @@ int main(int argc, char *argv[])
     makeChoice();
 
     return 0;
+}
+
+void resartClient()
+{
+    getchar();
+    makeChoice();
 }
 
 /**
@@ -65,7 +72,7 @@ void makeChoice()
     // if the user chooses anything else, prompt them to choose again
     default:
         printf("Invalid choice\n");
-        makeChoice();
+        resartClient();
     }
 }
 
@@ -98,7 +105,7 @@ void sortInts()
     sendintarray(sock, arr, size);
 
     // prompt the user to choose a function again
-    makeChoice();
+    resartClient();
 }
 
 /**
@@ -117,5 +124,5 @@ void commWithServer()
     talkToServer(sock);
 
     // prompt the user to choose a function again
-    makeChoice();
+    resartClient();
 }
