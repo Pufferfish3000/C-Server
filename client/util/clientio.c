@@ -32,23 +32,14 @@ void startLog()
 
 void addLog(char *text)
 {
-    printf("1\n");
     node_t *newLog = (node_t *)malloc(sizeof(node_t));
-    printf("2\n");
     newLog->data = text;
-    printf("3\n");
     node_t *log = head;
-    printf("4\n");
     while (log->next != NULL)
     {
-        printf("5\n");
         log = log->next;
-        printf("6\n");
     }
-    printf("7\n");
     log->next = newLog;
-
-    printf("8\n");
 }
 
 void printLogs()

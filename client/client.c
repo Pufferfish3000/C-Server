@@ -21,11 +21,8 @@ void resartClient();
 int main(int argc, char *argv[])
 {
     // Runs the makeChoice function, prompting the user to choose a function
-    //makeChoice();
     startLog();
-    addLog("test");
-    addLog("test2");
-    printLogs();
+    makeChoice();
     return 0;
 }
 
@@ -61,19 +58,24 @@ void makeChoice()
     // if the user chooses 1, run the commWithServer function,
     // which sends a message to the server
     case 1:
+        addLog("User Communicates with Server\n");
         commWithServer();
         break;
     // if the user chooses 2, run the sortInts function,
     // which sorts an array of integers
     case 2:
+        addLog("User Sorts Integers\n");
         sortInts();
         break;
     // if the user chooses 3, exit the program
     case 3:
+        addLog("User Exits Program\n");
+        printLogs();
         exit(0);
         break;
     // if the user chooses anything else, prompt them to choose again
     default:
+        addLog("User Chooses Invalid Option\n");
         printf("Invalid choice\n");
         resartClient();
     }
