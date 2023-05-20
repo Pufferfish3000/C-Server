@@ -1,6 +1,6 @@
 SOURCE = client.c util/clientio.c util/clientnetworking.c
 HEADER = util/clientio.h util/clientnetworking.h
-OUT	= startclient
+OUT = startclient
 CC = gcc
 FLAGS = -Wall
 

@@ -12,6 +12,54 @@
 #include <stdlib.h>
 #include "clientio.h"
 
+struct node
+{
+    char *data;
+    struct node *next;
+};
+
+typedef struct node node_t;
+
+node_t *head = NULL;
+
+void startLog()
+{
+    node_t *startLog = (node_t *)malloc(sizeof(node_t));
+    startLog->data = "---Start of Log---";
+    startLog->next = head;
+    head = startLog;
+}
+
+void addLog(char *text)
+{
+    printf("1\n");
+    node_t *newLog = (node_t *)malloc(sizeof(node_t));
+    printf("2\n");
+    newLog->data = text;
+    printf("3\n");
+    node_t *log = head;
+    printf("4\n");
+    while (log->next != NULL)
+    {
+        printf("5\n");
+        log = log->next;
+        printf("6\n");
+    }
+    printf("7\n");
+    log->next = newLog;
+
+    printf("8\n");
+}
+
+void printLogs()
+{
+    node_t *log = head;
+    while (log != NULL)
+    {
+        printf("%s\n", log->data);
+        log = log->next;
+    }
+}
 /**
  * @brief Outputs text to a file
  *

@@ -21,8 +21,11 @@ void resartClient();
 int main(int argc, char *argv[])
 {
     // Runs the makeChoice function, prompting the user to choose a function
-    makeChoice();
-
+    //makeChoice();
+    startLog();
+    addLog("test");
+    addLog("test2");
+    printLogs();
     return 0;
 }
 
