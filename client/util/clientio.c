@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include "clientio.h"
 
+void outputToFile(char *filename, char *text);
+char *inputFromFile(char *filename);
+
 struct node
 {
     char *data;
@@ -25,7 +28,7 @@ node_t *head = NULL;
 void startLog()
 {
     node_t *startLog = (node_t *)malloc(sizeof(node_t));
-    startLog->data = "---Start of Log---";
+    startLog->data = "---Start of Log---\n";
     startLog->next = head;
     head = startLog;
 }
@@ -42,12 +45,12 @@ void addLog(char *text)
     log->next = newLog;
 }
 
-void printLogs()
+void exportLogs()
 {
     node_t *log = head;
     while (log != NULL)
     {
-        printf("%s\n", log->data);
+        outputToFile("client.log", log->data);
         log = log->next;
     }
 }
@@ -62,7 +65,7 @@ void printLogs()
  */
 void outputToFile(char *filename, char *text)
 {
-    FILE *pF = fopen(filename, "w");
+    FILE *pF = fopen(filename, "a");
     // Check if file exists
     if (NULL == pF)
     {
@@ -73,6 +76,7 @@ void outputToFile(char *filename, char *text)
         // Write to file
         fprintf(pF, "%s", text);
     }
+    fclose(pF);
 }
 
 /**

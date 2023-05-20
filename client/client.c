@@ -70,7 +70,7 @@ void makeChoice()
     // if the user chooses 3, exit the program
     case 3:
         addLog("User Exits Program\n");
-        printLogs();
+        exportLogs();
         exit(0);
         break;
     // if the user chooses anything else, prompt them to choose again
