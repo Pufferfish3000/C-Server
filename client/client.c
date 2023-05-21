@@ -7,6 +7,7 @@
 void sortInts();
 void makeChoice();
 void commWithServer();
+void resartClient();
 
 /**
  * @brief Main function
@@ -20,9 +21,15 @@ void commWithServer();
 int main(int argc, char *argv[])
 {
     // Runs the makeChoice function, prompting the user to choose a function
+    startLog();
     makeChoice();
-
     return 0;
+}
+
+void resartClient()
+{
+    getchar();
+    makeChoice();
 }
 
 /**
@@ -51,21 +58,26 @@ void makeChoice()
     // if the user chooses 1, run the commWithServer function,
     // which sends a message to the server
     case 1:
+        addLog("User Communicates with Server\n");
         commWithServer();
         break;
     // if the user chooses 2, run the sortInts function,
     // which sorts an array of integers
     case 2:
+        addLog("User Sorts Integers\n");
         sortInts();
         break;
     // if the user chooses 3, exit the program
     case 3:
+        addLog("User Exits Program\n");
+        exportLogs();
         exit(0);
         break;
     // if the user chooses anything else, prompt them to choose again
     default:
+        addLog("User Chooses Invalid Option\n");
         printf("Invalid choice\n");
-        makeChoice();
+        resartClient();
     }
 }
 
@@ -98,7 +110,7 @@ void sortInts()
     sendintarray(sock, arr, size);
 
     // prompt the user to choose a function again
-    makeChoice();
+    resartClient();
 }
 
 /**
@@ -117,5 +129,5 @@ void commWithServer()
     talkToServer(sock);
 
     // prompt the user to choose a function again
-    makeChoice();
+    resartClient();
 }

@@ -1,6 +1,6 @@
 SOURCE = server.c util/serverfunctions.c util/servernetworking.c
 HEADER = util/serverfunctions.h util/servernetworking.h
-OUT	= startserver
+OUT = startserver
 CC = gcc
 FLAGS = -Wall
 
